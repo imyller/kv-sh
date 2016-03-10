@@ -77,11 +77,12 @@ kv_validate_key() {
 
 # Usage: kvget <key>
 kvget() {
-	key="${1}"
+	local key="${1}"
 	kv_validate_key "${key}" || {
 		kv_echo_err_box 'invalid param "key"' 'kvget()'
 		return 1
 	}
+	local value
 	if test -f "${KV_DB_DIR}/${key}"; then
 		value="$(cat "${KV_DB_DIR}/${key}")"
  	elif ( test ! -z "${KV_DB_DEFAULTS_DIR}" && test -f "${KV_DB_DEFAULTS_DIR}/${key}" ); then
@@ -94,7 +95,7 @@ kvget() {
 
 # Usage: kvexists <key>
 kvexists() {
-   	key="${1}"
+   	local key="${1}"
         kv_validate_key "${key}" || {
                 kv_echo_err_box 'invalid param "key"' 'kvexists()'
                 return 1
@@ -104,8 +105,8 @@ kvexists() {
 
 # Usage: kvset <key> [value]
 kvset() {
-	key="${1}"
-	value="${2}"
+	local key="${1}"
+	local value="${2}"
 	kv_validate_key "${key}" || {
 		kv_echo_err_box 'invalid param "key"' 'kvset()'
 		return 1
@@ -116,7 +117,7 @@ kvset() {
 
 # Usage: kvdel <key>
 kvdel() {
-	key="${1}"
+	local key="${1}"
 	kv_validate_key "${key}" || {
 		kv_echo_err_box 'invalid param "key"' 'kvdel()'
 		return 1
@@ -127,7 +128,7 @@ kvdel() {
 # list all keys to stdout
 # Usage: kvkeys
 kvkeys() {
-	keyfiles=""
+	local keyfiles=""
 	case "$1" in
 	    	-l)
 			keyfiles="$(ls "${KV_DB_DIR}/"* 2> /dev/null)"
@@ -141,7 +142,8 @@ kvkeys() {
 			;;
 	esac
 	if [ ! -z "${keyfiles}" ]; then
-		keys=""
+		local keys=""
+		local i
 		( for i in ${keyfiles}; do
                 	if test -f "$i"; then
                        		echo "$(basename "$i")"
@@ -153,7 +155,8 @@ kvkeys() {
 # list all key/value pairs to stdout
 # Usage: kvlist
 kvlist() {
-	mode=""
+	local mode=""
+	local key
         case "$1" in
                 -a)
                         mode="-a"
@@ -176,7 +179,8 @@ kvclear() {
 # dump key/value pairs to stdout
 # Usage: kvdump
 kvdump() {
-	mode=""
+	local mode=""
+	local key
 	case "$1" in
                 -a)
                         mode="-a"
@@ -194,6 +198,9 @@ kvdump() {
 # import key/value pairs to database
 # Usage: kvimport
 kvimport() {
+	local key
+	local qvalue
+	local value
 	while read -r line; do
 		key=$(echo "$line" | cut -d'=' -f1)
 		qvalue=$(echo "$line" | cut -d'=' -f2-)
