@@ -9,7 +9,7 @@
 # Based on kv-bash script by damphat (https://github.com/damphat/kv-bash)
 #
 # ABOUT kv-sh:
-# - tiny key/value dabatase
+# - tiny key-value database
 # - configurable database directory (default: ~/.kv-sh)
 # - used by importing functions via ```$ . ./kv-sh```
 #
