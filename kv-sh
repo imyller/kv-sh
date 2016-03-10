@@ -2,16 +2,11 @@
 
 # kv-sh 
 # Version 1.0
+#
 # Author: Ilkka Myller <ilkka.myller@nodefield.com>
 # Repository: https://github.com/imyller/kv-sh
 # Requirements: standard shell, unix-like environment, no dependencies
-# 
 # Based on kv-bash script by damphat (https://github.com/damphat/kv-bash)
-#
-# ABOUT kv-sh:
-# - tiny key/value dabatase
-# - configurable database directory (default: ~/.kv-sh)
-# - used by importing functions via ```$ . ./kv-sh```
 #
 # USAGE:
 #    . ./kv-sh          	# import kv-sh functions (use default database directory)
