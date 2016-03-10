@@ -301,7 +301,7 @@ TESTCASE 'kvset; kvlist with defaults database'
         kvset key4 "0 0 0"
         {
                 test $(kvlist -a | wc -l) = 4 && \
-                test $(kvlist | wc -l) = 2        
+                test $(kvlist | wc -l) = 2
 	}
         RESULT
 

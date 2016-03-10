@@ -1,6 +1,6 @@
 #!/bin/echo Should be run as: .
 
-# kv-sh 
+# kv-sh
 # Version 1.2.0
 #
 # Author: Ilkka Myller <ilkka.myller@nodefield.com>
@@ -9,7 +9,7 @@
 # Based on kv-bash script by damphat (https://github.com/damphat/kv-bash)
 #
 # USAGE:
-#    . ./kv-sh          	# import kv-sh functions (use default database directory; see 
+#    . ./kv-sh          	# import kv-sh functions (use default database directory; see
 #				  environment variables below)
 #    kvset <key> <value>     	# assign value to key
 #    kvget <key>             	# get value of key
@@ -24,7 +24,7 @@
 #
 # ENVIRONMENT VARIABLES:
 #	DB_DIR			# if set when importing kv-sh, use custom database directory
-#	DB_DEFAULTS_DIR		# if set when importing kv-sh, enable read-only default key-values 
+#	DB_DEFAULTS_DIR		# if set when importing kv-sh, enable read-only default key-values
 #				  from another database directory
 #
 
@@ -203,7 +203,7 @@ kvimport() {
 }
 
 # restore all key/value pairs in database
-# Usage: kvrestore  
+# Usage: kvrestore
 kvrestore() {
 	kvclear
 	kvimport
