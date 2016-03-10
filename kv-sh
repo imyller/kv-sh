@@ -48,7 +48,7 @@
 
 KV_DB_DIR="$HOME/.kv-sh"
 
-if [ ! -z "${1}" ]; then
+if test ! -z "${1}"; then
 	KV_DB_DIR="${1}"
 fi
 
@@ -72,7 +72,7 @@ kv_echo_err_box() {
 # Usage: kv_validate_key <key>
 kv_validate_key() {
 	echo "${1}" | grep -Eq '^[0-9a-zA-Z._:-]+$'
-	[[ "$?" = "0" ]]
+	test "$?" = "0"
 }
 
 ########################
@@ -86,10 +86,10 @@ kvget() {
 		kv_echo_err_box 'invalid param "key"' 'kvget()'
 		return 1
 	}
-	VALUE="$([ -f "${KV_DB_DIR}/${key}" ] && cat "${KV_DB_DIR}/${key}")"
+	VALUE="$(test -f "${KV_DB_DIR}/${key}" && cat "${KV_DB_DIR}/${key}")"
 	echo "${VALUE}"
 
-	[ "${VALUE}" != "" ]
+	test "${VALUE}" != ""
 }
 
 # Usage: kvset <key> [value]
@@ -118,7 +118,7 @@ kvdel() {
 # Usage: kvlist
 kvlist() {
 	for i in "${KV_DB_DIR}/"*; do
-		if [ -f "${i}" ]; then
+		if test -f "${i}"; then
 			key="$(basename "$i")"
 			echo "${key}" "$(kvget "${key}")"
 		fi
@@ -129,7 +129,7 @@ kvlist() {
 # Usage: kvkeys
 kvkeys() {
         for i in "${KV_DB_DIR}/"*; do
-                if [ -f "$i" ]; then
+                if test -f "$i"; then
                         key="$(basename "$i")"
                         echo "${key}"
                 fi

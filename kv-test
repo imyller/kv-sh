@@ -1,20 +1,22 @@
 #!/bin/sh
 
 BASEDIR=$(dirname "$0")
-source "${BASEDIR}"/kv-sh "/tmp/.kv-test"
 
 echo "Testing: ${BASEDIR}/kv-sh"
 
+. "${BASEDIR}"/kv-sh "/tmp/.kv-test"
+
 OK()      { echo "[  OK  ]"; }
 FAILED()  { echo "[FAILED]"; }
-RESULT()  { [ $? == 0 ] && OK || FAILED; }
+RESULT()  { test "$?" = "0" && OK || FAILED; }
 
 TEST_COUNT=0
 
 # Usage: TESTCASE [description string]
-function TESTCASE() {
-    ((TEST_COUNT++))
-	printf "%3s %-50s" "$TEST_COUNT" "$1"
+
+TESTCASE() {
+	TEST_COUNT="$(( $TEST_COUNT + 1 ))"
+	printf "%3s %-50s" "${TEST_COUNT}" "${1}"
 }
 
 echo "Database: ${KV_DB_DIR}"
@@ -26,44 +28,44 @@ echo RUN ALL TEST CASES:
 echo ===================
 
 TESTCASE 'call kvget for non-exist key should return empty'
-	[ "$(kvget name)" == "" ]
+	test "$(kvget name)" = ""
 	RESULT
 
 TESTCASE 'kvset then kvget a variable'
 	kvset name "Tom"
-	[ "$(kvget name)" == "Tom" ]
+	test "$(kvget name)" = "Tom"
 	RESULT
 
 TESTCASE 'kvset then kvset again with different value'
 	kvset name "Tom"
 	kvset name "Jerry"
-	[ "$(kvget name)" == "Jerry" ]
+	test "$(kvget name)" = "Jerry"
 	RESULT
 
 TESTCASE 'deleted variable should be empty'
 	kvset name "hello world!"
 	kvdel name
-	[ "$(kvget name)" == "" ]
+	test "$(kvget name)" = ""
 	RESULT
 
 TESTCASE 'kvdel non exist should be OK'
 	kvdel name
-	[ "$(kvdel name 2>&1)" == "" ]
+	test "$(kvdel name 2>&1)" = ""
 	RESULT
 
 TESTCASE 'kvset without param return error'
 	kvset 2>/dev/null
-	[ $? != 0 ]
+	test "$?" != "0"
 	RESULT
 
 TESTCASE 'kvget without param return error'
 	kvget 2>/dev/null
-	[ $? != 0 ]
+	test "$?" != "0"
 	RESULT
 
 TESTCASE 'kvdel without param return error'
 	kvdel 2>/dev/null
-	[ $? != 0 ]
+	test "$?" != "0"
 	RESULT
 
 TESTCASE 'kvset 3 keys/value; kvlist => line count = 3'
@@ -71,7 +73,7 @@ TESTCASE 'kvset 3 keys/value; kvlist => line count = 3'
 	kvset var1 value1
 	kvset var2 value2
 	kvset var3 value3
-	[ $(kvlist | wc -l) == 3 ]
+	test "$(kvlist | wc -l)" = "3"
 	RESULT
 
 TESTCASE 'kvset 3 keys/value; kvkeys => line count = 3'
@@ -79,39 +81,39 @@ TESTCASE 'kvset 3 keys/value; kvkeys => line count = 3'
         kvset var1 value1
         kvset var2 value2
         kvset var3 value3
-        [ $(kvkeys | wc -l) == 3 ]
+        test "$(kvkeys | wc -l)" = "3"
         RESULT
-	
+
 TESTCASE 'non-exist-var => empty value => line count = 1'
-	[ $(kvget non-exist-var | wc -l) == 1 ]
+	test "$(kvget non-exist-var | wc -l)"  = "1"
 	RESULT
 
 TESTCASE 'kvclear; kvlist => line count = 0'
 	kvset cat Tom
 	kvset mouse Jerry
 	kvclear
-	[ $(kvlist | wc -l) == 0 ]
+	test "$(kvlist | wc -l)" = "0"
 	RESULT
 
 TESTCASE 'kvclear; kvkeys => line count = 0'
         kvset cat Tom
         kvset mouse Jerry
         kvclear
-        [ $(kvkeys | wc -l) == 0 ]
+        test "$(kvkeys | wc -l)" = "0"
         RESULT
-	
+
 TESTCASE 'kvget return empty value => error code != 0'
-    kvset name 
+    kvset name
     $(kvget name)
-    [ $? != 0 ]
-    RESULT	
+    test "$?" != "0"
+    RESULT
 
 TESTCASE 'spaces in value'
 	kvset name '  phat  dam  '
-	[ "$(kvget name)" == '  phat  dam  ' ]
+	test "$(kvget name)" = '  phat  dam  '
 	RESULT
 	kvdel name
-	
+
 #more testcase here
 
 echo
