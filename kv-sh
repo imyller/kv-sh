@@ -1,4 +1,4 @@
-#!/bin/echo Should be run as: source
+#!/bin/echo Should be run as: .
 
 # kv-sh 
 # Version 1.0
@@ -11,20 +11,20 @@
 # ABOUT kv-sh:
 # - tiny key/value dabatase
 # - configurable database directory (default: ~/.kv-sh)
-# - used by importing functions via ```$ source ./kv-sh```
+# - used by importing functions via ```$ . ./kv-sh```
 #
 # USAGE:
-#    source ./kv-sh          # import kv-sh functions (use default database directory)
-#    source ./kv-sh <dir>    # import kv-sh functions (use database directory <dir>)
-#    kvset <key> <value>     # assign value to key
-#    kvget <key>             # get value of key
-#    kvdel <key>             # delete key
-#    kvlist                  # list all key/value pairs
-#    kvkeys		     # list all keys
-#    kvclear                 # clear database
+#    . ./kv-sh          	# import kv-sh functions (use default database directory)
+#    . ./kv-sh <dir>    	# import kv-sh functions (use database directory <dir>)
+#    kvset <key> <value>     	# assign value to key
+#    kvget <key>             	# get value of key
+#    kvdel <key>             	# delete key
+#    kvlist                  	# list all key/value pairs
+#    kvkeys		     	# list all keys
+#    kvclear                 	# clear database
 #
 # EXAMPLES:
-#    $ source ./kv-sh
+#    $ . ./kv-sh
 #    $ kvset user mr.bob
 #    $ kvset pass abc@123
 #    $ kvlist

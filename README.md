@@ -3,7 +3,7 @@ kv-sh [![Build Status](https://travis-ci.org/imyller/kv-sh.svg?branch=master)](h
 **About**
  - tiny key/value database
  - configurable database directory (default: `~/.kv-sh`)
- - used by importing functions via ```$ source ./kv-sh```
+ - used by importing functions via ```$ . ./kv-sh```
  
 Based on `kv-bash` script by [damphat](https://github.com/damphat/kv-bash)
 
@@ -18,14 +18,14 @@ Based on `kv-bash` script by [damphat](https://github.com/damphat/kv-bash)
 Import all key/value database functions (default database directory):
 
 ```sh
-source ./kv-sh         # import kv-sh functions
+. ./kv-sh         # import kv-sh functions
 ```
 
 Import all key/value database functions (custom database directory):
 
 
 ```sh
-source ./kv-sh /tmp/.kv         # import kv-sh functions and use /tmp/.kv as databae directory
+. ./kv-sh /tmp/.kv         # import kv-sh functions and use /tmp/.kv as databae directory
 ```
 
 Use key/value database functions:
@@ -42,7 +42,7 @@ $ kvclear                  # clear database
 **Examples**
 
 ```sh 
-$ source ./kv-sh
+$ . ./kv-sh
 $ kvset user mr.bob
 $ kvset pass abc@123
 $ kvlist
