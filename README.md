@@ -1,7 +1,7 @@
 kv-sh [![Build Status](https://travis-ci.org/imyller/kv-sh.svg?branch=master)](https://travis-ci.org/imyller/kv-sh)
 =====================
 
-`kv-sh` is a key/value database written in standard POSIX shell (sh)
+`kv-sh` is a key-value database written in standard POSIX shell (sh)
 
 **About**
  - Tiny key-value database
@@ -18,20 +18,20 @@ Based on `kv-bash` script by [damphat](https://github.com/damphat/kv-bash)
 
 **Usage**
 
-Import all key/value database functions (default database directory):
+Import all key-value database functions (default database directory):
 
 ```sh
 . ./kv-sh         # import kv-sh functions
 ```
 
-Import all key/value database functions (custom database directory):
+Import all key-value database functions (custom database directory):
 
 
 ```sh
 . ./kv-sh /tmp/.kv         # import kv-sh functions and use /tmp/.kv as databae directory
 ```
 
-Use key/value database functions:
+Use key-value database functions:
 
 ```
 $ kvset <key> <value>      # create or change value of key
