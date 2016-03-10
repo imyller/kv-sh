@@ -2,15 +2,18 @@
 
 BASEDIR=$(dirname "$0")
 
-echo "Testing: ${BASEDIR}/kv-sh"
+echo "SCRIPT: ${BASEDIR}/kv-sh"
 
 . "${BASEDIR}"/kv-sh "/tmp/.kv-test"
 
-OK()      { echo "[  OK  ]"; }
-FAILED()  { echo "[FAILED]"; }
+TEST_COUNT=0
+TEST_OK_COUNT=0
+TEST_FAILED_COUNT=0
+
+OK()      { echo "[  OK  ]"; TEST_OK_COUNT="$(( $TEST_OK_COUNT + 1 ))"; }
+FAILED()  { echo "[FAILED]"; TEST_FAILED_COUNT="$(( $TEST_FAILED_COUNT + 1 ))"; }
 RESULT()  { test $? = 0 && OK || FAILED; }
 
-TEST_COUNT=0
 
 # Usage: TESTCASE [description string]
 
@@ -19,13 +22,13 @@ TESTCASE() {
 	printf "%3s %-50s" "${TEST_COUNT}" "${1}"
 }
 
-echo "Database: ${KV_DB_DIR}"
+echo "DATABASE DIRECTORY: ${KV_DB_DIR}"
 
 rm -rf "${KV_DB_DIR}"
 
 echo
-echo RUN ALL TEST CASES:
-echo ===================
+echo "TEST CASES:"
+echo "==================="
 
 TESTCASE 'call kvget for non-exist key should return empty'
 	test "$(kvget name)" = ""
@@ -116,4 +119,11 @@ TESTCASE 'spaces in value'
 
 #more testcase here
 
+echo "==================="
+echo "TESTS: 		${TEST_COUNT}"
+echo "TESTS OK: 	${TEST_OK_COUNT}"
+echo "TESTS FAILED:	${TEST_FAILED_COUNT}"
+
 echo
+
+test "${TEST_FAILED_COUNT}" = 0 && exit 0 || exit 1
