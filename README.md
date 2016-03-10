@@ -28,7 +28,13 @@ Import all key-value database functions (custom database directory):
 
 
 ```sh
-. ./kv-sh /tmp/.kv         # import kv-sh functions and use /tmp/.kv as databae directory
+. ./kv-sh /tmp/.kv         # import kv-sh functions and use /tmp/.kv as database directory
+```
+
+Import all key-value database functions (custom database directory, alternative method):
+
+```sh
+DB_DIR="/tmp/.kv" . ./kv-sh       # import kv-sh functions and use /tmp/.kv as database directory
 ```
 
 Use key-value database functions:
