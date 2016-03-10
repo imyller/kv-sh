@@ -43,8 +43,12 @@ Use key-value database functions:
 $ kvset <key> <value>      # create or change value of key
 $ kvget <key>              # get value of key
 $ kvdel <key>              # delete key
+$ kvexists <key>	   # check if key exists (exit code 0 if key exists, 1 if not)
 $ kvlist                   # list all key/value pairs
 $ kvkeys                   # list all keys
+$ kvdump		   # dump key-value pairs in importable format
+$ kvimport		   # import key value-pairs from dump without clearing database
+$ kvrestore		   # clear database and import key-value pairs from dump
 $ kvclear                  # clear database
 ```
 
@@ -64,10 +68,12 @@ $ kvget user
 mr.bob
 $ kvget pass
 abc@123
+$ kvdump > /tmp/kv.dump
 $ kvdel pass
 $ kvget pass
 
 $ kvclear
+$ kvrestore < /tmp/kv.dump
 ```
 
 **Run tests**
@@ -96,13 +102,22 @@ TEST CASES:
   8 kvdel without param return error                  [  OK  ]
   9 kvset 3 keys/value; kvlist => line count = 3      [  OK  ]
  10 kvset 3 keys/value; kvkeys => line count = 3      [  OK  ]
- 11 non-exist-var => empty value => line count = 1    [  OK  ]
- 12 kvclear; kvlist => line count = 0                 [  OK  ]
- 13 kvclear; kvkeys => line count = 0                 [  OK  ]
- 14 kvget return empty value => error code != 0       [  OK  ]
- 15 spaces in value                                   [  OK  ]
+ 11 spaces in value                                   [  OK  ]
+ 12 non-exist-var => empty value => line count = 1    [  OK  ]
+ 13 kvclear; kvlist => line count = 0                 [  OK  ]
+ 14 kvclear; kvkeys => line count = 0                 [  OK  ]
+ 15 kvexists non exist => error code != 0             [  OK  ]
+ 16 kvexists exist empty => error code = 0            [  OK  ]
+ 17 kvexists exists value => error code = 0           [  OK  ]
+ 18 kvclear; kvset => directory created               [  OK  ]
+ 19 kvset; kvclear => directory deleted               [  OK  ]
+ 20 kvclear; kvdump => line count = 0                 [  OK  ]
+ 21 kvset 3 keys/value; kvdump => line count = 3      [  OK  ]
+ 22 kvdump; kvclear; kvimport                         [  OK  ]
+ 23 kvdump; kvimport                                  [  OK  ]
+ 24 kvdump; kvrestore                                 [  OK  ]
 ===================
-TESTS:        15
-TESTS OK:     15
+TESTS:        24
+TESTS OK:     24
 TESTS FAILED: 0
 ```
