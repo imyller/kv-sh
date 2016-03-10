@@ -1,25 +1,34 @@
-kv-sh [![Build Status](https://travis-ci.org/imyller/kv-sh.png?branch=master)](https://travis-ci.org/imyller/kv-sh)
+kv-sh [![Build Status](https://travis-ci.org/imyller/kv-sh.svg?branch=master)](https://travis-ci.org/imyller/kv-sh)
 =====================
 **About**
- - tiny key/value dabatase
- - configurable database directory (default: ~/.kv-sh)
+ - tiny key/value database
+ - configurable database directory (default: `~/.kv-sh`)
  - used by importing functions via ```$ source ./kv-sh```
  
-Based on `kv-bash` script by @damphat
+Based on `kv-bash` script by [damphat](https://github.com/damphat/kv-bash)
 
 **Requirements**
 
-standard shell, unix-like environment, no dependencies
+ - Standard shell (sh)
+ - Unix-like environment
+ - No dependencies
 
 **Usage**
 
-import all key/value database functions
+Import all key/value database functions (default database directory):
 
-```
-$ source ./kv-sh         # import kv-sh functions
+```sh
+source ./kv-sh         # import kv-sh functions
 ```
 
-use ke/value database functions
+Import all key/value database functions (custom database directory):
+
+
+```sh
+source ./kv-sh /tmp/.kv         # import kv-sh functions and use /tmp/.kv as databae directory
+```
+
+Use key/value database functions:
 
 ```
 $ kvset <key> <value>      # create or change value of key
@@ -32,7 +41,7 @@ $ kvclear                  # clear database
 
 **Examples**
 
-``` 
+```sh 
 $ source ./kv-sh
 $ kvset user mr.bob
 $ kvset pass abc@123
@@ -54,13 +63,13 @@ $ kvclear
 
 **Run tests**
 
-```
+```sh
 git clone https://github.com/imyller/kv-sh.git
 cd kv-sh
 ./kv-test
 ```
 
-test result
+Example test result:
 
 ```
 Testing: ./kv-sh
