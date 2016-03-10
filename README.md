@@ -1,15 +1,18 @@
 kv-sh [![Build Status](https://travis-ci.org/imyller/kv-sh.svg?branch=master)](https://travis-ci.org/imyller/kv-sh)
 =====================
+
+`kv-sh` is a key/value database written in standard POSIX shell (sh)
+
 **About**
- - tiny key/value database
- - configurable database directory (default: `~/.kv-sh`)
- - used by importing functions via ```$ . ./kv-sh```
+ - Tiny key/value database
+ - Configurable database directory (default: `~/.kv-sh`)
+ - Used by importing functions via ```$ . ./kv-sh```
  
 Based on `kv-bash` script by [damphat](https://github.com/damphat/kv-bash)
 
 **Requirements**
 
- - Standard shell (sh)
+ - Standard POSIX shell (sh)
  - Unix-like environment
  - No dependencies
 
