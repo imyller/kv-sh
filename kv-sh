@@ -14,28 +14,14 @@
 #    kvset <key> <value>     	# assign value to key
 #    kvget <key>             	# get value of key
 #    kvdel <key>             	# delete key
+#    kvexists <key>		# check if key exists
 #    kvlist                  	# list all key/value pairs
 #    kvkeys		     	# list all keys
+#    kvdump			# database dump
+#    kvimport			# database import (overwrite)
+#    kvrestore			# database restore (clear and restore)
 #    kvclear                 	# clear database
 #
-# EXAMPLES:
-#    $ . ./kv-sh
-#    $ kvset user mr.bob
-#    $ kvset pass abc@123
-#    $ kvlist
-#      user mr.bob
-#      pass abc@123
-#    $ kvkeys
-#      user
-#      pass
-#    $ kvget user
-#      mr.bob
-#    $ kvget pass
-#      abc@123
-#    $ kvdel pass
-#    $ kvget pass
-#
-#    $ kvclear
 
 ########################
 # CONSTANTS
@@ -87,8 +73,16 @@ kvget() {
 	}
 	VALUE="$(test -f "${KV_DB_DIR}/${key}" && cat "${KV_DB_DIR}/${key}")"
 	echo "${VALUE}"
+}
 
-	test "${VALUE}" != ""
+# Usage: kvexists <key>
+kvexists() {
+   	key="${1}"
+        kv_validate_key "${key}" || {
+                kv_echo_err_box 'invalid param "key"' 'kvexists()'
+                return 1
+        }
+        test -f "${KV_DB_DIR}/${key}"
 }
 
 # Usage: kvset <key> [value]
@@ -100,7 +94,7 @@ kvset() {
 		return 1
 	}
 	test -d "${KV_DB_DIR}" || mkdir "${KV_DB_DIR}"
-	echo "${value}" > "${KV_DB_DIR}/${key}"
+	printf "${value}" > "${KV_DB_DIR}/${key}"
 }
 
 # Usage: kvdel <key>
@@ -119,7 +113,7 @@ kvlist() {
 	for i in "${KV_DB_DIR}/"*; do
 		if test -f "${i}"; then
 			key="$(basename "$i")"
-			echo "${key}" "$(kvget "${key}")"
+			echo ${key} $(kvget "${key}")
 		fi
 	done
 }
@@ -135,9 +129,37 @@ kvkeys() {
         done
 }
 
-
 # clear all key/value pairs in database
 # Usage: kvclear
 kvclear() {
-	rm -rf "${KV_DB_DIR}"
+        rm -rf "${KV_DB_DIR}"
+}
+
+# dump key/value pairs to stdout
+# Usage: kvdump
+kvdump() {
+        for i in "${KV_DB_DIR}/"*; do
+                if test -f "${i}"; then
+                        key="$(basename "$i")"
+                        printf "${key}=\"$(kvget "${key}")\"\n"
+                fi
+        done
+}
+
+
+# import key/value pairs to database
+# Usage: kvimport
+kvimport() {
+	while read -r line; do
+		IFS='=' read -r key qvalue <<< "$line"
+		value=$(eval echo "${qvalue}")
+		kvset "${key}" "${value}"
+	done
+}
+
+# restore all key/value pairs in database
+# Usage: kvrestore  
+kvrestore() {
+	kvclear
+	kvimport
 }

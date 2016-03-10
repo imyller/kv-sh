@@ -93,6 +93,12 @@ TESTCASE 'kvset 3 keys/value; kvkeys => line count = 3'
         test $(kvkeys | wc -l) = 3
         RESULT
 
+TESTCASE 'spaces in value'
+        kvset name '  phat  dam  '
+        test "$(kvget name)" = '  phat  dam  '
+        RESULT
+        kvdel name
+
 TESTCASE 'non-exist-var => empty value => line count = 1'
 	test $(kvget non-exist-var | wc -l)  = 1
 	RESULT
@@ -111,17 +117,105 @@ TESTCASE 'kvclear; kvkeys => line count = 0'
         test $(kvkeys | wc -l) = 0
         RESULT
 
-TESTCASE 'kvget return empty value => error code != 0'
-    kvset name
-    $(kvget name)
-    test $? != 0
-    RESULT
+TESTCASE 'kvexists non exist => error code != 0'
+    	kvdel name
+    	$(kvexists name)
+    	test $? != 0
+    	RESULT
 
-TESTCASE 'spaces in value'
-	kvset name '  phat  dam  '
-	test "$(kvget name)" = '  phat  dam  '
+TESTCASE 'kvexists exist empty => error code = 0'
+    	kvset name_empty
+    	$(kvexists name_empty)
+    	test $? = 0
+    	RESULT
+
+TESTCASE 'kvexists exists value => error code = 0'
+    	kvset name_value value
+    	$(kvexists name_value)
+    	test $? = 0
 	RESULT
-	kvdel name
+
+TESTCASE 'kvclear; kvset => directory created'
+	kvclear
+	kvset key value
+	test -d "${KV_DB_DIR}"
+	RESULT
+
+TESTCASE 'kvset; kvclear => directory deleted'
+        kvset key value
+	kvclear
+        test ! -d "${KV_DB_DIR}"
+        RESULT
+
+TESTCASE 'kvclear; kvdump => line count = 0'
+        kvset cat Tom
+        kvset mouse Jerry
+        kvclear
+        test $(kvdump | wc -l) = 0
+        RESULT
+
+TESTCASE 'kvset 3 keys/value; kvdump => line count = 3'
+	kvclear
+        kvset cat Tom
+        kvset mouse Jerry
+	kvset key value
+        test $(kvdump | wc -l) = 3
+        RESULT
+
+TESTCASE 'kvdump; kvclear; kvimport'
+        kvclear
+        kvset key1 "1 2 3"
+        kvset key2 "4 5 6 "
+        kvset key3 " 7 8 9 = 10 "
+	kvdump > "/tmp/.kvdump"
+	kvclear
+	kvimport < "/tmp/.kvdump"
+	rm "/tmp/.kvdump"
+        {
+		test $(kvkeys | wc -l) = 3 && \
+		test "$(kvget key1)" = "1 2 3" && \
+ 		test "$(kvget key2)" = "4 5 6 " && \
+ 		test "$(kvget key3)" = " 7 8 9 = 10 "
+	}
+        RESULT
+
+TESTCASE 'kvdump; kvimport'
+        kvclear
+        kvset key1 "1 2 3"
+        kvset key2 "4 5 6 "
+        kvdump > "/tmp/.kvdump"
+        kvclear
+	kvset key3 " 7 8 9 = 10 "
+        kvset key4 " 7 8 9 = 12 "
+        kvimport < "/tmp/.kvdump"
+        rm "/tmp/.kvdump"
+        {
+                test $(kvkeys | wc -l) = 4 && \
+                test "$(kvget key1)" = "1 2 3" && \
+                test "$(kvget key2)" = "4 5 6 " && \
+                test "$(kvget key3)" = " 7 8 9 = 10 " && \
+		test "$(kvget key4)" = " 7 8 9 = 12 "
+        }
+        RESULT
+
+TESTCASE 'kvdump; kvrestore'
+        kvclear
+        kvset key1 "1 2 3"
+        kvset key2 "4 5 6 "
+        kvset key3 " 7 8 9 = 11 "
+        kvdump > "/tmp/.kvdump"
+        kvclear
+	kvset key5 "a"
+	kvset key6 "b"
+        kvrestore < "/tmp/.kvdump"
+        rm "/tmp/.kvdump"
+        {
+                test $(kvkeys | wc -l) = 3 && \
+                test "$(kvget key1)" = "1 2 3" && \
+                test "$(kvget key2)" = "4 5 6 " && \
+                test "$(kvget key3)" = " 7 8 9 = 11 "
+        }
+        RESULT
 
 #more testcase here
 
