@@ -10,7 +10,7 @@
 #
 # USAGE:
 #    . ./kv-sh          	# import kv-sh functions (use default database directory; see
-#				  environment variables below)
+#				  configuration environment variables for available options)
 #    kvset <key> <value>     	# assign value to key
 #    kvget <key>             	# get value of key
 #    kvdel <key>             	# delete key
