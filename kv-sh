@@ -141,7 +141,7 @@ kvdump() {
         for i in "${KV_DB_DIR}/"*; do
                 if test -f "${i}"; then
                         key="$(basename "$i")"
-                        printf "${key}=\"$(kvget "${key}")\"\n"
+                        echo "${key}=\"$(kvget "${key}")\""
                 fi
         done
 }
@@ -151,7 +151,8 @@ kvdump() {
 # Usage: kvimport
 kvimport() {
 	while read -r line; do
-		IFS='=' read -r key qvalue <<< "$line"
+		key=$(echo "$line" | cut -d'=' -f1)
+		qvalue=$(echo "$line" | cut -d'=' -f2-)
 		value=$(eval echo "${qvalue}")
 		kvset "${key}" "${value}"
 	done
