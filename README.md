@@ -7,6 +7,7 @@ kv-sh [![Build Status](https://travis-ci.org/imyller/kv-sh.svg?branch=master)](h
  - Tiny key-value database
  - Configurable database directory (default: `~/.kv-sh`)
  - Used by importing functions via ```$ . ./kv-sh```
+ - Full database dump/restore
  
 Based on `kv-bash` script by [damphat](https://github.com/damphat/kv-bash)
 
