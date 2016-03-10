@@ -10,7 +10,7 @@ fi
 
 echo "SCRIPT: ${KV_SCRIPT}"
 
-DB_DIR="/tmp/.kv-test" . "${KV_SCRIPT}"
+DB_DEFAULTS_DIR="" DB_DIR="/tmp/.kv-test" . "${KV_SCRIPT}"
 
 TEST_COUNT=0
 TEST_OK_COUNT=0
@@ -217,8 +217,105 @@ TESTCASE 'kvdump; kvrestore'
         }
         RESULT
 
-#more testcase here
+TESTCASE 'kvget with defaults database'
+        DB_DEFAULTS_DIR="" DB_DIR="/tmp/.kv-default" . "${KV_SCRIPT}"
+	kvclear
+        kvset key1 "1 2 3"
+        kvset key2 "4 5 6"
+        kvset key3 "7 8 9"
+	DB_DEFAULTS_DIR="/tmp/.kv-default" DB_DIR="/tmp/.kv-test" . "${KV_SCRIPT}"
+	kvclear
+	kvset key2 "a b c"
+        {
+                test $(kvkeys | wc -l) = 3 && \
+                test "$(kvget key1)" = "1 2 3" && \
+                test "$(kvget key2)" = "a b c" && \
+                test "$(kvget key3)" = "7 8 9"
+        }
+        RESULT
 
+TESTCASE 'kvdel with defaults database'
+        DB_DEFAULTS_DIR="" DB_DIR="/tmp/.kv-default" . "${KV_SCRIPT}"
+        kvclear
+        kvset key1 "1 2 3"
+        kvset key2 "4 5 6"
+        kvset key3 "7 8 9"
+        DB_DEFAULTS_DIR="/tmp/.kv-default" DB_DIR="/tmp/.kv-test" . "${KV_SCRIPT}"
+        kvclear
+        kvset key2 "a b c"
+	_tmp=$(kvget key2)
+	kvdel key2
+        {
+                test $(kvkeys | wc -l) = 3 && \
+		test "${_tmp}" = "a b c" && \
+                test "$(kvget key1)" = "1 2 3" && \
+                test "$(kvget key2)" = "4 5 6" && \
+                test "$(kvget key3)" = "7 8 9"
+        }
+        RESULT
+
+TESTCASE 'kvset; kvkeys with defaults database'
+        DB_DEFAULTS_DIR="" DB_DIR="/tmp/.kv-default" . "${KV_SCRIPT}"
+        kvclear
+        kvset key1 "1 2 3"
+        kvset key2 "4 5 6"
+        kvset key3 "7 8 9"
+        DB_DEFAULTS_DIR="/tmp/.kv-default" DB_DIR="/tmp/.kv-test" . "${KV_SCRIPT}"
+        kvclear
+        kvset key2 "a b c"
+	kvset key4 "0 0 0"
+	{
+		test $(kvkeys -l | wc -l) = 2 && \
+		test $(kvkeys -d | wc -l) = 3 && \
+ 		test $(kvkeys -a | wc -l) = 4 && \
+ 		test $(kvkeys | wc -l) = 4
+	}
+	RESULT
+
+TESTCASE 'kvset; kvdump with defaults database'
+        DB_DEFAULTS_DIR="" DB_DIR="/tmp/.kv-default" . "${KV_SCRIPT}"
+        kvclear
+        kvset key1 "1 2 3"
+        kvset key2 "4 5 6"
+        kvset key3 "7 8 9"
+        DB_DEFAULTS_DIR="/tmp/.kv-default" DB_DIR="/tmp/.kv-test" . "${KV_SCRIPT}"
+        kvclear
+        kvset key2 "a b c"
+        kvset key4 "0 0 0"
+        {
+                test $(kvdump -a | wc -l) = 4 && \
+                test $(kvdump | wc -l) = 2
+        }
+        RESULT
+
+
+TESTCASE 'kvset; kvlist with defaults database'
+        DB_DEFAULTS_DIR="" DB_DIR="/tmp/.kv-default" . "${KV_SCRIPT}"
+        kvclear
+        kvset key1 "1 2 3"
+        kvset key2 "4 5 6"
+        kvset key3 "7 8 9"
+        DB_DEFAULTS_DIR="/tmp/.kv-default" DB_DIR="/tmp/.kv-test" . "${KV_SCRIPT}"
+        kvclear
+        kvset key2 "a b c"
+        kvset key4 "0 0 0"
+        {
+                test $(kvlist -a | wc -l) = 4 && \
+                test $(kvlist | wc -l) = 2        
+	}
+        RESULT
+
+#
+# Clean up
+#
+DB_DEFAULTS_DIR="" DB_DIR="/tmp/.kv-default" . "${KV_SCRIPT}"
+kvclear
+DB_DEFAULTS_DIR="" DB_DIR="/tmp/.kv-test" . "${KV_SCRIPT}"
+kvclear
+
+#
+# Statistics and exit value
+# 
 echo "==================="
 echo "TESTS:        ${TEST_COUNT}"
 echo "TESTS OK:     ${TEST_OK_COUNT}"
