@@ -1,42 +1,47 @@
-kv-bash [![Build Status](https://travis-ci.org/damphat/kv-bash.png?branch=master)](https://travis-ci.org/damphat/kv-bash)
+kv-sh [![Build Status](https://travis-ci.org/imyller/kv-sh.png?branch=master)](https://travis-ci.org/imyller/kv-sh)
 =====================
 **About**
  - tiny key/value dabatase
- - database store in home directory
- - each user has 1 database
- - usage by importing 5 bash functions via ```$ source ./kv-bash```
+ - configurable database directory (default: ~/.kv-sh)
+ - used by importing functions via ```$ source ./kv-sh```
  
+Based on `kv-bash` script by @damphat
+
 **Requirements**
 
-unix-like environement, no dependencies
+standard shell, unix-like environment, no dependencies
 
 **Usage**
 
-import all database functions
+import all key/value database functions
 
 ```
-$ source ./kv-bash         # import kv-bash functions
+$ source ./kv-sh         # import kv-sh functions
 ```
 
-use database functions
+use ke/value database functions
 
 ```
 $ kvset <key> <value>      # create or change value of key
 $ kvget <key>              # get value of key
-$ kvdel <key>              # delete by key
-$ kvlist                   # list all current key/value pairs
+$ kvdel <key>              # delete key
+$ kvlist                   # list all key/value pairs
+$ kvkeys                   # list all keys
 $ kvclear                  # clear database
 ```
 
 **Examples**
 
 ``` 
-$ source ./kv-bash
+$ source ./kv-sh
 $ kvset user mr.bob
 $ kvset pass abc@123
 $ kvlist
 user mr.bob
 pass abc@123
+$ kvkeys
+user
+pass
 $ kvget user
 mr.bob
 $ kvget pass
@@ -50,14 +55,17 @@ $ kvclear
 **Run tests**
 
 ```
-git clone https://github.com/damphat/kv-bash.git
-cd kv-bash
+git clone https://github.com/imyller/kv-sh.git
+cd kv-sh
 ./kv-test
 ```
 
 test result
 
 ```
+Testing: ./kv-sh
+Database: /tmp/.kv-test
+
 RUN ALL TEST CASES:
 ===================
   1 call kvget for non-exist key should return empty  [  OK  ]
@@ -69,8 +77,10 @@ RUN ALL TEST CASES:
   7 kvget without param return error                  [  OK  ]
   8 kvdel without param return error                  [  OK  ]
   9 kvset 3 keys/value; kvlist => line count = 3      [  OK  ]
- 10 non-exist-var => empty value => line count = 1    [  OK  ]
- 11 kvclear; kvlist => line count = 0                 [  OK  ]
- 12 kvget return empty value => error code != 0       [  OK  ]
- 13 spaces in value                                   [  OK  ]
+ 10 kvset 3 keys/value; kvkeys => line count = 3      [  OK  ]
+ 11 non-exist-var => empty value => line count = 1    [  OK  ]
+ 12 kvclear; kvlist => line count = 0                 [  OK  ]
+ 13 kvclear; kvkeys => line count = 0                 [  OK  ]
+ 14 kvget return empty value => error code != 0       [  OK  ]
+ 15 spaces in value                                   [  OK  ]
 ```

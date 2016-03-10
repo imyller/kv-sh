@@ -1,10 +1,12 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
-BASH_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-source $BASH_DIR/kv-bash
+BASEDIR=$(dirname "$0")
+source "${BASEDIR}"/kv-sh "/tmp/.kv-test"
 
-OK()      { echo -e "[\e[01;32m  OK  \e[0m]"; }
-FAILED()  { echo -e "[\e[01;31mFAILED\e[0m]"; }
+echo "Testing: ${BASEDIR}/kv-sh"
+
+OK()      { echo "[  OK  ]"; }
+FAILED()  { echo "[FAILED]"; }
 RESULT()  { [ $? == 0 ] && OK || FAILED; }
 
 TEST_COUNT=0
@@ -15,7 +17,9 @@ function TESTCASE() {
 	printf "%3s %-50s" "$TEST_COUNT" "$1"
 }
 
-rm -rf "$KV_USER_DIR"
+echo "Database: ${KV_DB_DIR}"
+
+rm -rf "$KV_DB_DIR"
 
 echo
 echo RUN ALL TEST CASES:
@@ -69,6 +73,14 @@ TESTCASE 'kvset 3 keys/value; kvlist => line count = 3'
 	kvset var3 value3
 	[ $(kvlist | wc -l) == 3 ]
 	RESULT
+
+TESTCASE 'kvset 3 keys/value; kvkeys => line count = 3'
+        kvclear
+        kvset var1 value1
+        kvset var2 value2
+        kvset var3 value3
+        [ $(kvkeys | wc -l) == 3 ]
+        RESULT
 	
 TESTCASE 'non-exist-var => empty value => line count = 1'
 	[ $(kvget non-exist-var | wc -l) == 1 ]
@@ -80,6 +92,13 @@ TESTCASE 'kvclear; kvlist => line count = 0'
 	kvclear
 	[ $(kvlist | wc -l) == 0 ]
 	RESULT
+
+TESTCASE 'kvclear; kvkeys => line count = 0'
+        kvset cat Tom
+        kvset mouse Jerry
+        kvclear
+        [ $(kvkeys | wc -l) == 0 ]
+        RESULT
 	
 TESTCASE 'kvget return empty value => error code != 0'
     kvset name 

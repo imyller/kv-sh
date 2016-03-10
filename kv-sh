@@ -1,0 +1,144 @@
+#!/bin/echo Should be run as: source
+
+# kv-sh 
+# Version 1.0
+# Author: Ilkka Myller <ilkka.myller@nodefield.com>
+# Repository: https://github.com/imyller/kv-sh
+# Requirements: standard shell, unix-like environment, no dependencies
+# 
+# Based on kv-bash script by damphat (https://github.com/damphat/kv-bash)
+#
+# ABOUT kv-sh:
+# - tiny key/value dabatase
+# - configurable database directory (default: ~/.kv-sh)
+# - used by importing functions via ```$ source ./kv-sh```
+#
+# USAGE:
+#    source ./kv-sh          # import kv-sh functions (use default database directory)
+#    source ./kv-sh <dir>    # import kv-sh functions (use database directory <dir>)
+#    kvset <key> <value>     # assign value to key
+#    kvget <key>             # get value of key
+#    kvdel <key>             # delete key
+#    kvlist                  # list all key/value pairs
+#    kvkeys		     # list all keys
+#    kvclear                 # clear database
+#
+# EXAMPLES:
+#    $ source ./kv-sh
+#    $ kvset user mr.bob
+#    $ kvset pass abc@123
+#    $ kvlist
+#      user mr.bob
+#      pass abc@123
+#    $ kvkeys
+#      user
+#      pass
+#    $ kvget user
+#      mr.bob
+#    $ kvget pass
+#      abc@123
+#    $ kvdel pass
+#    $ kvget pass
+#
+#    $ kvclear
+
+########################
+# CONSTANTS
+########################
+
+KV_DB_DIR="$HOME/.kv-sh"
+
+if [ ! -z "${1}" ]; then
+	KV_DB_DIR="${1}"
+fi
+
+########################
+# LOCAL FUNCTIONS
+########################
+
+# print to stderr
+kv_echo_err() {
+	echo -e "${@}" >&2
+}
+
+# Usage: kv_echo_err_box <err-msg> <function-name>
+kv_echo_err_box() {
+	kv_echo_err "  +-------------------------------+"
+	kv_echo_err "  | ERROR: $1"
+	kv_echo_err "  | function: $2"
+	kv_echo_err "  +-------------------------------+"
+}
+
+# Usage: kv_validate_key <key>
+kv_validate_key() {
+	echo "${1}" | grep -Eq '^[0-9a-zA-Z._:-]+$'
+	[[ "$?" = "0" ]]
+}
+
+########################
+# PUBLIC FUNCTIONS
+########################
+
+# Usage: kvget <key>
+kvget() {
+	key="${1}"
+	kv_validate_key "${key}" || {
+		kv_echo_err_box 'invalid param "key"' 'kvget()'
+		return 1
+	}
+	VALUE="$([ -f "${KV_DB_DIR}/${key}" ] && cat "${KV_DB_DIR}/${key}")"
+	echo "${VALUE}"
+
+	[ "${VALUE}" != "" ]
+}
+
+# Usage: kvset <key> [value]
+kvset() {
+	key="${1}"
+	value="${2}"
+	kv_validate_key "${key}" || {
+		kv_echo_err_box 'invalid param "key"' 'kvset()'
+		return 1
+	}
+	test -d "${KV_DB_DIR}" || mkdir "${KV_DB_DIR}"
+	echo "${value}" > "${KV_DB_DIR}/${key}"
+}
+
+# Usage: kvdel <key>
+kvdel() {
+	key="${1}"
+	kv_validate_key "${key}" || {
+		kv_echo_err_box 'invalid param "key"' 'kvdel()'
+		return 1
+	}
+	test -f "${KV_DB_DIR}/${key}" && rm -f "${KV_DB_DIR}/${key}"
+}
+
+# list all key/value pairs to stdout
+# Usage: kvlist
+kvlist() {
+	for i in "${KV_DB_DIR}/"*; do
+		if [ -f "${i}" ]; then
+			key="$(basename "$i")"
+			echo "${key}" "$(kvget "${key}")"
+		fi
+	done
+}
+
+# list all keys to stdout
+# Usage: kvkeys
+kvkeys() {
+        for i in "${KV_DB_DIR}/"*; do
+                if [ -f "$i" ]; then
+                        key="$(basename "$i")"
+                        echo "${key}"
+                fi
+        done
+}
+
+
+# clear all key/value pairs in database
+# Usage: kvclear
+kvclear() {
+	rm -rf "${KV_DB_DIR}"
+}
