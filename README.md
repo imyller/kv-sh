@@ -72,10 +72,10 @@ cd kv-sh
 Example test result:
 
 ```
-Testing: ./kv-sh
-Database: /tmp/.kv-test
+SCRIPT: ./kv-sh
+DATABASE DIRECTORY: /tmp/.kv-test
 
-RUN ALL TEST CASES:
+TEST CASES:
 ===================
   1 call kvget for non-exist key should return empty  [  OK  ]
   2 kvset then kvget a variable                       [  OK  ]
@@ -92,4 +92,8 @@ RUN ALL TEST CASES:
  13 kvclear; kvkeys => line count = 0                 [  OK  ]
  14 kvget return empty value => error code != 0       [  OK  ]
  15 spaces in value                                   [  OK  ]
+===================
+TESTS:        15
+TESTS OK:     15
+TESTS FAILED: 0
 ```
