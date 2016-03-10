@@ -1,10 +1,16 @@
 #!/bin/sh
 
-BASEDIR=$(dirname "$0")
+KV_BASEDIR=$(dirname "$0")
+KV_SCRIPT="${KV_BASEDIR}/"kv-sh
 
-echo "SCRIPT: ${BASEDIR}/kv-sh"
+if test ! -e "${KV_SCRIPT}"; then
+	echo "${KV_SCRIPT}: not found"
+	exit 1
+fi
 
-. "${BASEDIR}"/kv-sh "/tmp/.kv-test"
+echo "SCRIPT: ${KV_SCRIPT}"
+
+DB_DIR="/tmp/.kv-test" . "${KV_SCRIPT}"
 
 TEST_COUNT=0
 TEST_OK_COUNT=0
@@ -120,9 +126,9 @@ TESTCASE 'spaces in value'
 #more testcase here
 
 echo "==================="
-echo "TESTS: 		${TEST_COUNT}"
-echo "TESTS OK: 	${TEST_OK_COUNT}"
-echo "TESTS FAILED:	${TEST_FAILED_COUNT}"
+echo "TESTS:        ${TEST_COUNT}"
+echo "TESTS OK:     ${TEST_OK_COUNT}"
+echo "TESTS FAILED: ${TEST_FAILED_COUNT}"
 
 echo
 

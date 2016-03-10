@@ -48,6 +48,10 @@
 
 KV_DB_DIR="$HOME/.kv-sh"
 
+if test ! -z "${DB_DIR}"; then
+	KV_DB_DIR="${DB_DIR}"
+fi
+
 if test ! -z "${1}"; then
 	KV_DB_DIR="${1}"
 fi
