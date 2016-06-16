@@ -1,8 +1,9 @@
 language: sh
-
 os:
-  - linux
-  - osx
-
+- linux
+- osx
 script:
-    - sh kv-test
+- sh kv-test
+notifications:
+  slack:
+    secure: eHOe/toPfwqBp1KG91AlCr/0MLtxD2rfDPHSVt/3r8Pk8wn5t+8ENogFfNDUuYUhYStsGXpZ0D1+TgfIqoMJvV0tclRDsOw7/7x5QA7HnQYmGberybVg3EPK5ygd60kVhix9nW/HQux27QelBa0Xx+4IXewpljFmebcjftjLgOFoR+ytsIHxioDVs710qYqNNLNjdLR04+Pabf8eF9kQyo2lqbgCI6L/mZOlW5lw7M7QjECdbdd1u1+8tpPoLYv18ph06lSWYTh/vfYS1rBdestvGq/CrsBUymsoh1IA5MWlMJHyH8z6q28EQmXIBDb78T9GRRrEuiXHDKf5lpqZZAbj+z4t0smz1Utuf8hBA1eaG5J33sYjFxzdc1CnLvuayRU+HL9IB9Wkf3RYsQUUW4LcORBXUMbYd4fLVWhQLelGUuZ6sUp1ksGQIzU2IM0a0lzOdBi5o9Aos3d6R95qg0P3I0QKjZ9ao0uuB1VN+civlFjN4lK7rvMGIE+Fj1pqai9Gg16H+t9PqGbBpjLE/7y2nT4a3J3UGQXVj8mTgXhWh/O8YNX/Z7IxobBozBPkJsFTgWs/g7A4TBZcLee971Z0xcJEQPQoPsWfEl5a6rcMJYhwgCbtSWJCjU0GXDcRn8t9aULpl+SjwbDK/Gu2uVb/0bBQSHcfByr9dtY2JHI=
